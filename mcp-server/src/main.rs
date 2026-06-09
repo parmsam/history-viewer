@@ -5,7 +5,7 @@ use serde_json::{json, Value};
 
 mod history;
 
-const VERSION: &str = "0.3.1";
+const VERSION: &str = "0.3.2";
 fn main() {
     let stdin = io::stdin();
     let stdout = io::stdout();

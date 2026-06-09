@@ -6,6 +6,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.3.2] — 2026-06-09
+
+### Added
+- **Activity by Day** — GitHub contribution-calendar heatmap in Stats view, showing visit counts per day across the selected date range
+- **GitHub-style hour heatmap** — replaces the flat time-of-day strip with a 7×24 grid (Mon–Sun rows × hour columns) using a 5-level green color scale
+- **MCP server** — companion binary (`history-viewer-mcp`) exposing browser history as LLM tools over the Model Context Protocol; bundled in each release for zero-install setup
+- Working hover tooltips in Stats view (custom React tooltip replaces broken `title` attribute)
+- Favicons/domain icons reduced from 24 px to 16 px
+
+### Fixed
+- DMG now includes an Applications folder shortcut for drag-to-install
+
+---
+
 ## [0.3.1] — 2026-06-09
 
 ### Fixed
