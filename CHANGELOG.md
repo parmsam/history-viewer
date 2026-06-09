@@ -6,6 +6,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.3.3] — 2026-06-09
+
+### Added
+- **Visits Over Time bar chart** — new Stats section with vertical bars showing visit counts; Day / Week / Month granularity toggle; bars scale to fit the panel width
+- **Stats view redesign** — summary stat cards across the top (total visits, active days, avg/day, top domain, active browsers); card-bordered panels; two-column lower layout (bar chart + hour heatmap on the left, top domains on the right)
+- **Last 90 days and Last 1 year** quick range presets in the date filter
+
+---
+
 ## [0.3.2] — 2026-06-09
 
 ### Added
