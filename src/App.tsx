@@ -337,7 +337,7 @@ export default function App() {
             <p>Reading browser history…</p>
           </div>
         ) : viewMode === "stats" ? (
-          <StatsView entries={filtered} />
+          <StatsView entries={filtered} rangeStart={activeRange.start} rangeEnd={activeRange.end} />
         ) : (
           <Timeline entries={filtered} />
         )}

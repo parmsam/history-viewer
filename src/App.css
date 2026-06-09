@@ -23,6 +23,11 @@
   --hover-bg:    rgba(255,255,255,.035);
   --radius:      6px;
   --heatmap-rgb: 79, 142, 247;
+  --gh-0: #2d333b;
+  --gh-1: #0e4429;
+  --gh-2: #006d32;
+  --gh-3: #26a641;
+  --gh-4: #39d353;
   color-scheme:  dark;
 }
 
@@ -47,6 +52,11 @@
   --hover-bg:    rgba(0,0,0,.045);
   --radius:      6px;
   --heatmap-rgb: 47, 110, 240;
+  --gh-0: #ebedf0;
+  --gh-1: #9be9a8;
+  --gh-2: #40c463;
+  --gh-3: #30a14e;
+  --gh-4: #216e39;
   color-scheme:  light;
 }
 
@@ -554,9 +564,16 @@
   min-width: 280px;
   padding: 0 20px 32px 0;
 }
-.stats-section + .stats-section {
+.stats-section + .stats-section:not(.stats-section-full) {
   padding-left: 20px;
   border-left: 1px solid var(--border);
+}
+.stats-section-full {
+  flex: 0 0 100%;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+  overflow-x: auto;
 }
 
 .stats-heading {
@@ -608,46 +625,100 @@
   flex-shrink: 0;
 }
 
-/* ── Heatmap ───────────────────────────────────────────────── */
-.heatmap {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 4px;
+/* ── GitHub-green shared levels ────────────────────────────── */
+.gh-out { background: transparent; }
+.gh-0   { background: var(--gh-0); }
+.gh-1   { background: var(--gh-1); }
+.gh-2   { background: var(--gh-2); }
+.gh-3   { background: var(--gh-3); }
+.gh-4   { background: var(--gh-4); }
+
+/* ── Tooltip ────────────────────────────────────────────────── */
+.gh-tooltip {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
 }
 
-.heatmap-cell {
-  position: relative;
-  border-radius: 5px;
-  height: 44px;
+/* ── Hour × Day grid ────────────────────────────────────────── */
+.hdg { display: flex; flex-direction: column; gap: 3px; }
+
+.hdg-header {
   display: flex;
+  gap: 3px;
   align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 5px;
-  cursor: default;
-  overflow: hidden;
+  padding-bottom: 2px;
 }
-.heatmap-cell::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: rgba(var(--heatmap-rgb), calc(0.07 + var(--intensity) * 0.73));
-  transition: opacity 0.2s;
-}
-.heatmap-cell:hover::before {
-  background: rgba(var(--heatmap-rgb), calc(0.15 + var(--intensity) * 0.73));
-}
-.heatmap-label {
-  position: relative;
-  z-index: 1;
+.hdg-corner { width: 32px; flex-shrink: 0; }
+.hdg-hlabel {
+  width: 14px;
   font-size: 10px;
-  font-weight: 600;
   color: var(--text-dim);
-  letter-spacing: -0.2px;
+  text-align: left;
+  flex-shrink: 0;
+  line-height: 1;
 }
-.heatmap-caption {
-  margin-top: 10px;
+.hdg-row { display: flex; gap: 3px; align-items: center; }
+.hdg-dlabel {
+  width: 32px;
   font-size: 11px;
-  color: var(--text-faint);
+  color: var(--text-dim);
+  text-align: right;
+  padding-right: 6px;
+  flex-shrink: 0;
 }
+.hdg-cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  cursor: default;
+  transition: filter 0.1s;
+}
+.hdg-cell:hover { filter: brightness(1.3); }
+
+/* ── Activity-by-day calendar ───────────────────────────────── */
+.actcal { display: inline-flex; flex-direction: column; gap: 3px; min-width: max-content; }
+
+.actcal-months {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+.actcal-corner { width: 28px; flex-shrink: 0; }
+.actcal-month-cell {
+  width: 12px;
+  font-size: 10px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  overflow: visible;
+  white-space: nowrap;
+}
+.actcal-body { display: flex; gap: 3px; }
+.actcal-daylabels { display: flex; flex-direction: column; gap: 3px; width: 28px; flex-shrink: 0; }
+.actcal-daylabel {
+  height: 12px;
+  font-size: 10px;
+  color: var(--text-dim);
+  text-align: right;
+  padding-right: 4px;
+  line-height: 12px;
+}
+.actcal-weeks { display: flex; gap: 3px; }
+.actcal-week { display: flex; flex-direction: column; gap: 3px; }
+.actcal-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  cursor: default;
+  transition: filter 0.1s;
+}
+.actcal-cell:hover { filter: brightness(1.3); }
