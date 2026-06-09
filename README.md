@@ -18,6 +18,7 @@ A native macOS app for browsing and searching your browser history across Firefo
    ```bash
    xattr -dr com.apple.quarantine "/Applications/History Viewer.app"
    ```
+   > Fully eliminating this warning requires Apple notarization, which requires an Apple Developer Program membership ($99/year). This is a personal open-source project, so that cost isn't justified — the `xattr` workaround is the intended install path.
 4. **Grant Full Disk Access** so the app can read your browser databases:
    - Open **System Settings → Privacy & Security → Full Disk Access**
    - Click the `+` button and add **History Viewer**
