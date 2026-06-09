@@ -25,6 +25,7 @@ Follow these steps exactly to produce a release build:
    VERSION=$(node -p "require('./package.json').version")
    rm -rf /tmp/hv-staging && mkdir /tmp/hv-staging
    cp -r "src-tauri/target/release/bundle/macos/History Viewer.app" /tmp/hv-staging/
+   ln -s /Applications /tmp/hv-staging/Applications
    mkdir -p "src-tauri/target/release/bundle/dmg"
    hdiutil create \
      -volname "History Viewer" \

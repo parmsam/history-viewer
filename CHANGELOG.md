@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.3.1] — 2026-06-09
+
+### Fixed
+- DMG now includes an Applications folder shortcut for drag-to-install
+
+---
+
 ## [0.3.0] — 2026-06-09
 
 ### Added

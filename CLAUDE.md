@@ -21,6 +21,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
    ```bash
    rm -rf /tmp/hv-staging && mkdir /tmp/hv-staging
    cp -r "src-tauri/target/release/bundle/macos/History Viewer.app" /tmp/hv-staging/
+   ln -s /Applications /tmp/hv-staging/Applications
    hdiutil create -volname "History Viewer" -srcfolder /tmp/hv-staging -ov -format UDZO \
      "src-tauri/target/release/bundle/dmg/History Viewer_<version>_aarch64.dmg"
    ```
