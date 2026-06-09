@@ -7,6 +7,17 @@ import { endOfDay, startOfDay } from "date-fns";
 import "./App.css";
 
 export default function App() {
+  const [theme, setTheme] = useState<"light" | "dark">(
+    () => (document.documentElement.getAttribute("data-theme") as "light" | "dark") ?? "dark"
+  );
+
+  function toggleTheme() {
+    const next = theme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("hv-theme", next);
+    setTheme(next);
+  }
+
   const [browserStatus, setBrowserStatus] = useState<BrowserStatus>({ firefox: false, safari: false, chrome: false });
   const [enabledBrowsers, setEnabledBrowsers] = useState<Set<string>>(new Set());
 
@@ -142,6 +153,9 @@ export default function App() {
           </div>
         </div>
         <div className="topbar-right">
+          <button className="theme-toggle" onClick={toggleTheme} title="Toggle light/dark mode">
+            {theme === "dark" ? "☀︎" : "☾"}
+          </button>
           <div className="search-wrap">
             <span className="search-icon">⌕</span>
             <input

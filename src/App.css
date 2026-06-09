@@ -1,7 +1,8 @@
 /* ── Reset & root ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
+:root,
+[data-theme="dark"] {
   --bg:          #0f1117;
   --surface:     #161a25;
   --surface2:    #1e2233;
@@ -16,8 +17,32 @@
   --sf-color:    #1e90ff;
   --ch-color:    #4caf50;
   --danger:      #e05252;
+  --hover-bg:    rgba(255,255,255,.035);
   --radius:      6px;
+  color-scheme:  dark;
+}
 
+[data-theme="light"] {
+  --bg:          #f0f2f7;
+  --surface:     #ffffff;
+  --surface2:    #e6e9f0;
+  --border:      #d8dce8;
+  --border2:     #c4c9d8;
+  --text:        #1c1f2e;
+  --text-dim:    #50566e;
+  --text-faint:  #8890a8;
+  --accent:      #2f6ef0;
+  --accent-dim:  #dce8ff;
+  --ff-color:    #d95f1a;
+  --sf-color:    #0a6ed1;
+  --ch-color:    #2e8b35;
+  --danger:      #c93a3a;
+  --hover-bg:    rgba(0,0,0,.045);
+  --radius:      6px;
+  color-scheme:  light;
+}
+
+:root {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   font-size: 14px;
   line-height: 1.5;
@@ -47,7 +72,7 @@
 }
 
 .topbar-left  { display: flex; align-items: center; gap: 14px; }
-.topbar-right { flex: 1; max-width: 460px; }
+.topbar-right { display: flex; align-items: center; gap: 8px; flex: 1; max-width: 480px; }
 
 .app-title {
   font-size: 15px;
@@ -83,6 +108,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  flex: 1;
 }
 .search-icon {
   position: absolute;
@@ -254,7 +280,7 @@
   outline: none;
   transition: background 0.1s;
 }
-.hour-header:hover { background: rgba(255,255,255,.03); }
+.hour-header:hover { background: var(--hover-bg); }
 .hour-chevron { font-size: 10px; color: var(--text-faint); width: 10px; }
 .hour-label   { font-weight: 500; color: var(--text-dim); }
 .hour-count   { margin-left: auto; color: var(--text-faint); }
@@ -269,7 +295,7 @@
   padding: 6px 20px;
   transition: background 0.1s;
 }
-.entry-row:hover { background: rgba(255,255,255,.03); }
+.entry-row:hover { background: var(--hover-bg); }
 
 .entry-time {
   font-size: 12px;
@@ -330,3 +356,18 @@
 .browser-badge.firefox { background: rgba(255,113,57,.15); color: var(--ff-color); }
 .browser-badge.safari  { background: rgba(30,144,255,.15);  color: var(--sf-color); }
 .browser-badge.chrome  { background: rgba(76,175,80,.15);   color: var(--ch-color); }
+
+/* ── Theme toggle ──────────────────────────────────────────── */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 4px 7px;
+  transition: background 0.12s, color 0.12s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { background: var(--surface2); color: var(--text); }
