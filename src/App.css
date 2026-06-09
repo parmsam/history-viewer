@@ -466,12 +466,12 @@
 
 /* ── Domain icon ───────────────────────────────────────────── */
 .domain-icon {
-  width: 24px; height: 24px;
-  border-radius: 6px;
+  width: 16px; height: 16px;
+  border-radius: 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
   color: #fff;
   flex-shrink: 0;
