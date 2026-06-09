@@ -55,7 +55,15 @@ History Viewer ships a companion MCP server that exposes your browser history as
 
 ### Install (no Rust required)
 
-Download `history-viewer-mcp` from the [Releases](https://github.com/parmsam/history-viewer/releases) page, then add it to your Claude config:
+Download `history-viewer-mcp` from the [Releases](https://github.com/parmsam/history-viewer/releases) page.
+
+**First, remove the macOS quarantine flag** (same as the app — unsigned binary):
+```bash
+xattr -dr com.apple.quarantine /path/to/history-viewer-mcp
+chmod +x /path/to/history-viewer-mcp
+```
+
+Then add it to your Claude config:
 
 **Claude Code** (`~/.claude.json`):
 ```json
