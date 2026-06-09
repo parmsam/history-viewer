@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.1] — 2026-06-09
+
+### Added
+- README note explaining history sync behavior: data is a snapshot taken at load/refresh, and Chrome may lag due to buffered writes
+
+---
+
 ## [0.2.0] — 2026-06-09
 
 ### Added
