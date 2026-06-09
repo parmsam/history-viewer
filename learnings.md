@@ -221,3 +221,73 @@ xattr -dr com.apple.quarantine "/Applications/History Viewer.app"
 Once the flag is gone, Gatekeeper never runs its check and the app opens freely. This is the practical install path for unsigned open-source apps distributed outside the Mac App Store.
 
 **Why notarization costs money:** the "Developer ID Application" certificate required for distribution outside the App Store is only available with a paid Apple Developer Program membership ($99/year). Without it, you can ad-hoc sign for free (better UX than unsigned), but you can't fully bypass Gatekeeper for end users.
+
+---
+
+## 12. MCP Server — stdio JSON-RPC, Not HTTP
+
+The MCP server (`mcp-server/`) is a standalone Rust binary that speaks JSON-RPC 2.0 over **stdin/stdout**, not a network socket. Claude Code (or any MCP host) spawns it as a subprocess and pipes messages to it.
+
+Key rules of the protocol:
+- Every request has an `"id"` field. Responses must echo it back.
+- **Notifications** (e.g., `notifications/initialized`) have **no `"id"`**. You must silently ignore them — responding to a notification would violate the protocol.
+- Each response is one JSON line followed by a newline flush. Buffering without flushing means the host never sees the reply.
+
+```rust
+// Notifications have no "id" — skip them
+let id = match msg.get("id") {
+    Some(id) => id.clone(),
+    None => continue,   // ← silently drop notifications
+};
+```
+
+The four methods the host calls: `initialize`, `ping`, `tools/list`, `tools/call`. Everything else returns an error.
+
+---
+
+## 13. Favicon Fallback — Google's CDN + `onError`
+
+Rather than bundling any icons, `DomainIcon` fetches favicons from Google's public service:
+
+```ts
+<img src={`https://www.google.com/s2/favicons?domain=${domain}&sz=32`}
+     onError={() => setImgFailed(true)} />
+```
+
+If the image fails (unknown domain, offline, privacy blocker), `onError` sets state and the component re-renders as a colored letter avatar instead. The color is deterministic — derived by hashing the domain string — so the same domain always gets the same color.
+
+The `onError` + state swap pattern is the standard React approach for graceful image degradation. The key insight: you can't know whether a remote image will load until the browser tries, so you handle failure reactively rather than pre-checking.
+
+---
+
+## 14. JavaScript `getDay()` Is Sunday-First — Converting to Mon-First
+
+JavaScript's `Date.getDay()` returns 0 for Sunday, 1 for Monday, …, 6 for Saturday. Most calendar UIs (and this heatmap) show Monday as the first row. The conversion is a one-liner, but the formula is non-obvious:
+
+```ts
+const jsDay = getDay(dt);             // 0 = Sun, 1 = Mon, ..., 6 = Sat
+const monDay = jsDay === 0 ? 6 : jsDay - 1;  // 0 = Mon, ..., 6 = Sun
+```
+
+Sunday (`0`) wraps to `6` (last row). Every other day just shifts back by one. Get this wrong and Sunday visits appear in the Monday row and everything is off by one.
+
+---
+
+## 15. Build-Time Constants via Vite `define`
+
+The app displays its own version number and compares it to the latest GitHub release. The version comes from `package.json` — but that file isn't readable at runtime in a compiled Tauri bundle. Vite's `define` config solves this by replacing a token with a literal value **at build time**:
+
+```ts
+// vite.config.ts
+const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
+export default defineConfig({
+  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+});
+```
+
+```ts
+// App.tsx — __APP_VERSION__ is replaced with e.g. "0.3.2" before bundling
+if (semverGt(latest, __APP_VERSION__)) { ... }
+```
+
+After bundling, every occurrence of `__APP_VERSION__` in the source is replaced with the string literal `"0.3.2"` (or whatever version is in `package.json`). TypeScript needs a declaration too — `vite-env.d.ts` adds `declare const __APP_VERSION__: string` to satisfy the type checker.
