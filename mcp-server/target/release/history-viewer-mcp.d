@@ -1,1 +1,0 @@
-/Users/sam/Documents/01-projects/history-viewer/mcp-server/target/release/history-viewer-mcp: /Users/sam/Documents/01-projects/history-viewer/mcp-server/src/history.rs /Users/sam/Documents/01-projects/history-viewer/mcp-server/src/main.rs
