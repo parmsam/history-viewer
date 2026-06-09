@@ -1,0 +1,14 @@
+/Users/sam/Documents/01-projects/history-viewer/mcp-server/target/release/deps/serde-caf078c3f1d0deb6.d: /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/sam/Documents/01-projects/history-viewer/mcp-server/target/release/build/serde-5e17367d8685998c/out/private.rs
+
+/Users/sam/Documents/01-projects/history-viewer/mcp-server/target/release/deps/libserde-caf078c3f1d0deb6.rlib: /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/sam/Documents/01-projects/history-viewer/mcp-server/target/release/build/serde-5e17367d8685998c/out/private.rs
+
+/Users/sam/Documents/01-projects/history-viewer/mcp-server/target/release/deps/libserde-caf078c3f1d0deb6.rmeta: /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/sam/Documents/01-projects/history-viewer/mcp-server/target/release/build/serde-5e17367d8685998c/out/private.rs
+
+/Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/Users/sam/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/Users/sam/Documents/01-projects/history-viewer/mcp-server/target/release/build/serde-5e17367d8685998c/out/private.rs:
+
+# env-dep:OUT_DIR=/Users/sam/Documents/01-projects/history-viewer/mcp-server/target/release/build/serde-5e17367d8685998c/out
