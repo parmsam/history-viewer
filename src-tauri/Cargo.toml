@@ -1,8 +1,8 @@
 [package]
-name = "tauri-app"
+name = "history-viewer"
 version = "0.2.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "Browse and search browser history across Firefox, Safari, and Chrome in one unified timeline"
+authors = ["Sam Parmar"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
