@@ -1,9 +1,50 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
+// useRef/useEffect used by VisitsBarChart only
 import { HistoryEntry } from "../types";
 import {
   fromUnixTime, format, startOfWeek, endOfWeek,
   eachDayOfInterval, getDay, getHours,
 } from "date-fns";
+
+type Granularity = "day" | "week" | "month";
+
+interface BarDatum { key: string; label: string; count: number }
+
+function aggregateBars(
+  activityByDay: Map<string, number>,
+  rangeStart: Date,
+  rangeEnd: Date,
+  gran: Granularity,
+): BarDatum[] {
+  const days = eachDayOfInterval({ start: rangeStart, end: rangeEnd });
+  if (gran === "day") {
+    return days.map((d) => {
+      const key = format(d, "yyyy-MM-dd");
+      return { key, label: format(d, "MMM d"), count: activityByDay.get(key) ?? 0 };
+    });
+  }
+  if (gran === "week") {
+    const map = new Map<string, BarDatum>();
+    for (const d of days) {
+      const ws = startOfWeek(d, { weekStartsOn: 1 });
+      const key = format(ws, "yyyy-MM-dd");
+      const dc = activityByDay.get(format(d, "yyyy-MM-dd")) ?? 0;
+      const ex = map.get(key);
+      if (ex) ex.count += dc;
+      else map.set(key, { key, label: format(ws, "MMM d"), count: dc });
+    }
+    return Array.from(map.values());
+  }
+  const map = new Map<string, BarDatum>();
+  for (const d of days) {
+    const key = format(d, "yyyy-MM");
+    const dc = activityByDay.get(format(d, "yyyy-MM-dd")) ?? 0;
+    const ex = map.get(key);
+    if (ex) ex.count += dc;
+    else map.set(key, { key, label: format(d, "MMM"), count: dc });
+  }
+  return Array.from(map.values());
+}
 
 interface Props {
   entries: HistoryEntry[];
@@ -26,11 +67,13 @@ function ghLevel(count: number, max: number): 0 | 1 | 2 | 3 | 4 {
 
 export function StatsView({ entries, rangeStart, rangeEnd }: Props) {
   const [tooltip, setTooltip] = useState<Tooltip | null>(null);
+  const [gran, setGran] = useState<Granularity>("day");
 
-  const { domainStats, hourDayGrid, activityByDay } = useMemo(() => {
+  const { domainStats, hourDayGrid, activityByDay, summaryStats } = useMemo(() => {
     const domainMap = new Map<string, number>();
     const hourDayGrid: number[][] = Array.from({ length: 7 }, () => new Array(24).fill(0));
     const activityByDay = new Map<string, number>();
+    const browsers = new Set<string>();
 
     for (const e of entries) {
       const dt = fromUnixTime(e.visit_time);
@@ -40,6 +83,7 @@ export function StatsView({ entries, rangeStart, rangeEnd }: Props) {
       hourDayGrid[monDay][getHours(dt)]++;
       const key = format(dt, "yyyy-MM-dd");
       activityByDay.set(key, (activityByDay.get(key) ?? 0) + 1);
+      browsers.add(e.browser);
     }
 
     const domainStats = Array.from(domainMap.entries())
@@ -47,8 +91,22 @@ export function StatsView({ entries, rangeStart, rangeEnd }: Props) {
       .sort((a, b) => b.count - a.count)
       .slice(0, 25);
 
-    return { domainStats, hourDayGrid, activityByDay };
+    const activeDays = activityByDay.size;
+    const summaryStats = {
+      totalVisits: entries.length,
+      activeDays,
+      avgPerDay: activeDays > 0 ? Math.round(entries.length / activeDays) : 0,
+      topDomain: domainStats[0]?.domain ?? "—",
+      browsers: browsers.size,
+    };
+
+    return { domainStats, hourDayGrid, activityByDay, summaryStats };
   }, [entries]);
+
+  const bars = useMemo(
+    () => aggregateBars(activityByDay, rangeStart, rangeEnd, gran),
+    [activityByDay, rangeStart, rangeEnd, gran],
+  );
 
   const maxDayCount = useMemo(
     () => Math.max(...Array.from(activityByDay.values()), 1),
@@ -94,36 +152,75 @@ export function StatsView({ entries, rangeStart, rangeEnd }: Props) {
       )}
 
       <div className="stats-view">
-        <div className="stats-section">
-          <h3 className="stats-heading">Most Visited Sites</h3>
-          <div className="domain-stats">
-            {domainStats.map((s) => (
-              <div key={s.domain} className="domain-stat-row">
-                <span className="domain-stat-name">{s.domain}</span>
-                <div className="domain-stat-bar-wrap">
-                  <div className="domain-stat-bar" style={{ width: `${(s.count / maxDomain) * 100}%` }} />
-                </div>
-                <span className="domain-stat-count">{s.count.toLocaleString()}</span>
-              </div>
-            ))}
+
+        {/* ── Summary cards ── */}
+        <div className="stats-cards">
+          {[
+            { value: summaryStats.totalVisits.toLocaleString(), label: "Total Visits" },
+            { value: summaryStats.activeDays.toLocaleString(), label: "Active Days" },
+            { value: summaryStats.avgPerDay.toLocaleString(), label: "Avg Visits / Day" },
+            { value: summaryStats.topDomain, label: "Top Domain", small: true },
+            { value: summaryStats.browsers.toString(), label: "Browsers" },
+          ].map(({ value, label, small }) => (
+            <div key={label} className="stat-card">
+              <span className={`stat-card-value${small ? " stat-card-value-sm" : ""}`}>{value}</span>
+              <span className="stat-card-label">{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Activity calendar ── */}
+        <div className="stats-panel">
+          <h3 className="stats-heading">Activity</h3>
+          <div style={{ overflowX: "auto" }}>
+            <ActivityCalendar
+              weeks={calWeeks}
+              activityByDay={activityByDay}
+              maxCount={maxDayCount}
+              onHover={tip}
+              onLeave={noTip}
+            />
           </div>
         </div>
 
-        <div className="stats-section">
-          <h3 className="stats-heading">Activity by Hour</h3>
-          <HourDayGrid grid={hourDayGrid} maxCount={maxHourCount} onHover={tip} onLeave={noTip} />
+        {/* ── Two-column: chart + hour grid | top domains ── */}
+        <div className="stats-two-col">
+          <div className="stats-panel stats-col-left">
+            <div className="stats-heading-row">
+              <h3 className="stats-heading">Visits Over Time</h3>
+              <div className="gran-toggle">
+                {(["day", "week", "month"] as Granularity[]).map((g) => (
+                  <button
+                    key={g}
+                    className={`gran-btn${gran === g ? " active" : ""}`}
+                    onClick={() => setGran(g)}
+                  >
+                    {g.charAt(0).toUpperCase() + g.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <VisitsBarChart bars={bars} gran={gran} onHover={tip} onLeave={noTip} />
+            <h3 className="stats-heading stats-subheading">Activity by Hour</h3>
+            <HourDayGrid grid={hourDayGrid} maxCount={maxHourCount} onHover={tip} onLeave={noTip} />
+          </div>
+
+          <div className="stats-panel stats-col-right">
+            <h3 className="stats-heading">Most Visited Sites</h3>
+            <div className="domain-stats">
+              {domainStats.map((s) => (
+                <div key={s.domain} className="domain-stat-row">
+                  <span className="domain-stat-name">{s.domain}</span>
+                  <div className="domain-stat-bar-wrap">
+                    <div className="domain-stat-bar" style={{ width: `${(s.count / maxDomain) * 100}%` }} />
+                  </div>
+                  <span className="domain-stat-count">{s.count.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="stats-section stats-section-full">
-          <h3 className="stats-heading">Activity by Day</h3>
-          <ActivityCalendar
-            weeks={calWeeks}
-            activityByDay={activityByDay}
-            maxCount={maxDayCount}
-            onHover={tip}
-            onLeave={noTip}
-          />
-        </div>
       </div>
     </>
   );
@@ -160,6 +257,104 @@ function HourDayGrid({ grid, maxCount, onHover, onLeave }: HourDayProps) {
           ))}
         </div>
       ))}
+    </div>
+  );
+}
+
+// ── Visits-over-time bar chart ──────────────────────────────────────────────────
+
+interface BarChartProps {
+  bars: BarDatum[];
+  gran: Granularity;
+  onHover: (e: React.MouseEvent, text: string) => void;
+  onLeave: () => void;
+}
+
+function VisitsBarChart({ bars, gran, onHover, onLeave }: BarChartProps) {
+  const maxCount = Math.max(...bars.map((b) => b.count), 1);
+
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [wrapW, setWrapW] = useState(600);
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    setWrapW(el.clientWidth);
+    const obs = new ResizeObserver((entries) => setWrapW(entries[0].contentRect.width));
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const padLeft = 44;
+  const padTop = 10;
+  const padBottom = 24;
+  const padRight = 12;
+  const chartH = 130;
+  const svgH = padTop + chartH + padBottom;
+
+  const availW = Math.max(wrapW - padLeft - padRight, 1);
+  const step = Math.max(2, Math.floor(availW / Math.max(bars.length, 1)));
+  const barW = Math.max(1, step - Math.max(1, Math.round(step * 0.25)));
+  const svgW = wrapW;
+
+  const minLabelPx = 48;
+  const labelEvery = Math.max(1, Math.ceil(minLabelPx / step));
+
+  const gridFracs = [0.25, 0.5, 0.75, 1.0];
+
+  return (
+    <div className="vbc-wrap" ref={wrapRef}>
+      <svg width={svgW} height={svgH} className="vbc-svg">
+        {gridFracs.map((frac) => {
+          const y = padTop + chartH * (1 - frac);
+          return (
+            <g key={frac}>
+              <line x1={padLeft} x2={svgW - 12} y1={y} y2={y} className="vbc-gridline" />
+              <text x={padLeft - 5} y={y + 4} className="vbc-ylabel">
+                {Math.round(maxCount * frac).toLocaleString()}
+              </text>
+            </g>
+          );
+        })}
+
+        <line
+          x1={padLeft} x2={svgW - 12}
+          y1={padTop + chartH} y2={padTop + chartH}
+          className="vbc-baseline"
+        />
+
+        {bars.map((b, i) => {
+          const barH = b.count === 0 ? 0 : Math.max(2, (b.count / maxCount) * chartH);
+          const x = padLeft + i * step;
+          const y = padTop + chartH - barH;
+          return (
+            <rect
+              key={b.key}
+              x={x} y={y}
+              width={barW} height={barH || 0}
+              rx={gran === "month" ? 3 : gran === "week" ? 2 : 1}
+              className="vbc-bar"
+              onMouseEnter={(e) =>
+                onHover(e, `${b.label}: ${b.count.toLocaleString()} visit${b.count !== 1 ? "s" : ""}`)
+              }
+              onMouseLeave={onLeave}
+            />
+          );
+        })}
+
+        {bars.map((b, i) => {
+          if (i % labelEvery !== 0) return null;
+          return (
+            <text
+              key={b.key}
+              x={padLeft + i * step + barW / 2}
+              y={svgH - 6}
+              className="vbc-xlabel"
+            >
+              {b.label}
+            </text>
+          );
+        })}
+      </svg>
     </div>
   );
 }

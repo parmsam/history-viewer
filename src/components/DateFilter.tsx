@@ -20,6 +20,8 @@ export function presetRange(r: QuickRange): DateRange {
     case "yesterday": return { start: startOfDay(subDays(now, 1)), end: endOfDay(subDays(now, 1)) };
     case "last7":     return { start: startOfDay(subDays(now, 6)), end: endOfDay(now) };
     case "last30":    return { start: startOfDay(subDays(now, 29)), end: endOfDay(now) };
+    case "last90":    return { start: startOfDay(subDays(now, 89)), end: endOfDay(now) };
+    case "last365":   return { start: startOfDay(subDays(now, 364)), end: endOfDay(now) };
     default:          return todayRange();
   }
 }
@@ -30,6 +32,8 @@ export function DateFilter({ quickRange, customRange, onQuickRange, onCustomRang
     { label: "Yesterday", value: "yesterday" },
     { label: "Last 7 days", value: "last7" },
     { label: "Last 30 days", value: "last30" },
+    { label: "Last 90 days", value: "last90" },
+    { label: "Last 1 year", value: "last365" },
     { label: "Custom", value: "custom" },
   ];
 

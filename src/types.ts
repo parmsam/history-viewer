@@ -16,7 +16,7 @@ export interface BrowserStatus {
   arc: boolean;
 }
 
-export type QuickRange = "today" | "yesterday" | "last7" | "last30" | "custom";
+export type QuickRange = "today" | "yesterday" | "last7" | "last30" | "last90" | "last365" | "custom";
 
 export interface DateRange {
   start: Date;
