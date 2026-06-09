@@ -1,18 +1,26 @@
 <div align="center">
   <img src="public/tauri.svg" width="96" height="96" alt="History Viewer logo"/>
   <h1>History Viewer</h1>
-  <p>A native macOS app for browsing and searching your browser history<br>across Firefox, Safari, and Chrome in one unified timeline.</p>
+  <p>A native macOS app for browsing and searching your browser history<br>across Firefox, Safari, Chrome, Edge, Brave, and Arc in one unified timeline.</p>
+</div>
+
+<div align="center">
+  <img src="docs/screenshot.png" width="800" alt="History Viewer timeline view"/>
 </div>
 
 ---
 
 ## Features
 
-- Unified timeline view across Firefox, Safari, and Chrome
+- Unified timeline across Firefox, Safari, Chrome, Edge, Brave, and Arc — browser toggles appear automatically for detected browsers
 - Filter by today, yesterday, last 7 days, last 30 days, or a custom date range
-- Full-text search across titles, URLs, and domains
-- Click any entry to open it in your browser
-- Dark UI, grouped by day and hour
+- Full-text search with plain-text or regex mode (⌘F to focus)
+- Click any entry to open it in your browser; real favicons per domain
+- Light and dark mode with persistent preference
+- **Stats view** — top 25 domains by visit count, a 7×24 hour heatmap, and a GitHub-style activity calendar
+- Export filtered results to CSV or JSON
+- Update checker — notifies you on launch when a new release is available
+- Grouped by day and hour; collapsible per hour
 
 ## Install
 
@@ -112,10 +120,12 @@ npm run tauri dev
 ## Build
 
 ```bash
-npm run tauri build
+npm run tauri build -- --bundles app
 ```
 
 The `.app` bundle will be in `src-tauri/target/release/bundle/macos/`.
+
+> `npm run tauri build` (without `--bundles app`) fails at the DMG step due to a Tauri bundler issue with leftover temp files. Use the flag above to build the `.app` only, then create the DMG separately with `hdiutil`.
 
 ## Tech stack
 
