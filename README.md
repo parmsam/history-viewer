@@ -18,11 +18,18 @@
 
 1. Download the latest `.dmg` from the [Releases](https://github.com/parmsam/history-viewer/releases) page
 2. Open the `.dmg` and drag **History Viewer** to Applications
-3. **First launch:** macOS will block the app since it's unsigned. You may see *"History Viewer is damaged and can't be opened"* — this is a Gatekeeper false positive. Right-click → Open to bypass, or run:
+3. **First launch:** macOS will block the app since it's unsigned. You may see *"History Viewer is damaged and can't be opened"* — this is a Gatekeeper false positive. Run:
    ```bash
    xattr -dr com.apple.quarantine "/Applications/History Viewer.app"
    ```
-   > Fully eliminating this warning requires Apple notarization, which requires an Apple Developer Program membership ($99/year). This is a personal open-source project, so that cost isn't justified — the `xattr` workaround is the intended install path.
+   <details>
+   <summary>Why is this needed?</summary>
+
+   When you download a file from the internet, macOS silently tags it with a hidden attribute called `com.apple.quarantine`. This is the Gatekeeper flag that triggers the "damaged" warning for unsigned apps. The command above removes (`-d`) that attribute recursively (`-r`) from the app and everything inside it — after that, macOS treats it as if it was never downloaded from the internet and opens it without complaint.
+
+   Fully eliminating this warning without the workaround requires Apple notarization, which requires an Apple Developer Program membership ($99/year). This is a personal open-source project, so that cost isn't justified.
+
+   </details>
 4. **Grant Full Disk Access** so the app can read your browser databases:
    - Open **System Settings → Privacy & Security → Full Disk Access**
    - Click the `+` button and add **History Viewer**
