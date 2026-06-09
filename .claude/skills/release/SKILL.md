@@ -36,7 +36,12 @@ Follow these steps exactly to produce a release build:
 
 5. **Confirm the DMG exists** and report its path and file size to the user.
 
-6. **Create the GitHub release** using `gh release create`:
+6. **Push commits to main** so the release tag points to the right code:
+   ```bash
+   git push origin main
+   ```
+
+7. **Create the GitHub release** using `gh release create`:
    ```bash
    VERSION=$(node -p "require('./package.json').version")
    gh release create "v${VERSION}" \
