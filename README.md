@@ -12,19 +12,23 @@ A native macOS app for browsing and searching your browser history across Firefo
 
 ## Install
 
-Download the latest `.dmg` from the [Releases](https://github.com/parmsam/history-viewer/releases) page, open it, and drag **History Viewer** to Applications.
+1. Download the latest `.dmg` from the [Releases](https://github.com/parmsam/history-viewer/releases) page
+2. Open the `.dmg` and drag **History Viewer** to Applications
+3. **First launch:** macOS will block the app since it's unsigned. Right-click → Open to bypass, or run:
+   ```bash
+   xattr -dr com.apple.quarantine "/Applications/History Viewer.app"
+   ```
+4. **Grant Full Disk Access** so the app can read your browser databases:
+   - Open **System Settings → Privacy & Security → Full Disk Access**
+   - Click the `+` button and add **History Viewer**
+   - Relaunch the app
 
-**First launch:** macOS will block the app since it's unsigned. Right-click → Open to bypass, or run:
-
-```bash
-xattr -dr com.apple.quarantine "/Applications/History Viewer.app"
-```
+> Without Full Disk Access, History Viewer cannot read any browser history.
 
 ## Requirements
 
 - macOS 11+
 - Firefox, Safari, and/or Chrome installed
-- **Full Disk Access** for History Viewer in System Settings → Privacy & Security → Full Disk Access
 
 ## Development
 
