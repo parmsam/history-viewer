@@ -14,7 +14,7 @@ A native macOS app for browsing and searching your browser history across Firefo
 
 1. Download the latest `.dmg` from the [Releases](https://github.com/parmsam/history-viewer/releases) page
 2. Open the `.dmg` and drag **History Viewer** to Applications
-3. **First launch:** macOS will block the app since it's unsigned. Right-click → Open to bypass, or run:
+3. **First launch:** macOS will block the app since it's unsigned. You may see *"History Viewer is damaged and can't be opened"* — this is a Gatekeeper false positive. Right-click → Open to bypass, or run:
    ```bash
    xattr -dr com.apple.quarantine "/Applications/History Viewer.app"
    ```
