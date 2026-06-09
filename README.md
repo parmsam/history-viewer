@@ -37,6 +37,14 @@
 
 > Without Full Disk Access, History Viewer cannot read any browser history.
 
+## Keeping history up to date
+
+History Viewer reads a snapshot of your browser databases at the moment you open the app or hit the **↻ refresh button**. Data is not updated automatically while the app is open.
+
+**Chrome:** Chrome holds a write lock on its history file while it's running. The app copies the file before reading, but Chrome may not have flushed recent visits to disk yet — visits from your current session can appear missing or incomplete. Close Chrome and refresh, or just refresh and accept that the last few minutes of Chrome history may lag.
+
+**Firefox / Safari:** Generally flush to disk more reliably while open, but the same principle applies — refresh to get the latest data.
+
 ## Requirements
 
 - macOS 11+
