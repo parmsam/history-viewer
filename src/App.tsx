@@ -7,7 +7,7 @@ import { endOfDay, startOfDay } from "date-fns";
 import "./App.css";
 
 export default function App() {
-  const [browserStatus, setBrowserStatus] = useState<BrowserStatus>({ firefox: false, safari: false });
+  const [browserStatus, setBrowserStatus] = useState<BrowserStatus>({ firefox: false, safari: false, chrome: false });
   const [enabledBrowsers, setEnabledBrowsers] = useState<Set<string>>(new Set());
 
   const [quickRange, setQuickRange] = useState<QuickRange>("today");
