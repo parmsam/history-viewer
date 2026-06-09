@@ -1,6 +1,10 @@
-# History Viewer
+<div align="center">
+  <img src="public/tauri.svg" width="96" height="96" alt="History Viewer logo"/>
+  <h1>History Viewer</h1>
+  <p>A native macOS app for browsing and searching your browser history<br>across Firefox, Safari, and Chrome in one unified timeline.</p>
+</div>
 
-A native macOS app for browsing and searching your browser history across Firefox and Safari in one unified timeline.
+---
 
 ## Features
 
