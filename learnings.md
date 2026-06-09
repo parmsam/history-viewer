@@ -189,3 +189,35 @@ const result = await invoke<{ entries: HistoryEntry[]; errors: string[] }>("get_
 ```
 
 The `<{ ... }>` tells TypeScript what shape to expect. Without it, `result` is `unknown` and you can't access any properties. This pattern applies everywhere you call an external API or boundary — the type doesn't come from the runtime, you assert it, so you're responsible for keeping it accurate.
+
+---
+
+## 11. macOS Gatekeeper, Quarantine, and Code Signing Tiers
+
+When you download a file from the internet, macOS silently attaches a hidden extended attribute to it:
+
+```bash
+com.apple.quarantine
+```
+
+This is the Gatekeeper flag. When you try to open an app that has this flag, macOS checks whether the app is signed and notarized. What happens depends on the signing tier:
+
+| Tier | How | macOS behavior |
+|------|-----|----------------|
+| Unsigned | No signing | "App is damaged and can't be opened" — hard block, Terminal required |
+| Ad-hoc signed | `codesign -s -` (free) | "Unidentified developer" — right-click → Open works |
+| Developer ID signed | $99/year Apple Developer account | "Unidentified developer" — right-click → Open works |
+| Signed + notarized | Developer ID + Apple's notary service | No warning at all |
+
+The `xattr` workaround simply removes the quarantine flag entirely:
+
+```bash
+xattr -dr com.apple.quarantine "/Applications/History Viewer.app"
+```
+
+- `-d` removes the attribute
+- `-r` applies recursively to everything inside the `.app` bundle
+
+Once the flag is gone, Gatekeeper never runs its check and the app opens freely. This is the practical install path for unsigned open-source apps distributed outside the Mac App Store.
+
+**Why notarization costs money:** the "Developer ID Application" certificate required for distribution outside the App Store is only available with a paid Apple Developer Program membership ($99/year). Without it, you can ad-hoc sign for free (better UX than unsigned), but you can't fully bypass Gatekeeper for end users.
