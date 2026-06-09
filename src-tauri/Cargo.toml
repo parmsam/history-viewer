@@ -1,6 +1,6 @@
 [package]
 name = "history-viewer"
-version = "0.2.1"
+version = "0.3.0"
 description = "Browse and search browser history across Firefox, Safari, and Chrome in one unified timeline"
 authors = ["Sam Parmar"]
 edition = "2021"

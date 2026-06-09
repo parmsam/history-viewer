@@ -1,4 +1,5 @@
-// Colored circle with domain initial — no external requests needed
+import { useState } from "react";
+
 const COLORS = [
   "#4f8ef7", "#e74c4c", "#2ecc71", "#f39c12", "#9b59b6",
   "#1abc9c", "#e67e22", "#3498db", "#e91e63", "#00bcd4",
@@ -12,12 +13,25 @@ function colorFor(domain: string): string {
 
 interface Props {
   domain: string;
-  browser: "firefox" | "safari" | "chrome";
+  browser: string;
 }
 
 export function DomainIcon({ domain, browser }: Props) {
+  const [imgFailed, setImgFailed] = useState(false);
   const label = domain.charAt(0).toUpperCase() || "?";
   const bg = colorFor(domain);
+
+  if (domain && !imgFailed) {
+    return (
+      <img
+        className="domain-icon domain-favicon"
+        src={`https://www.google.com/s2/favicons?domain=${domain}&sz=32`}
+        alt={domain}
+        title={`${domain} (${browser})`}
+        onError={() => setImgFailed(true)}
+      />
+    );
+  }
 
   return (
     <span className="domain-icon" style={{ background: bg }} title={`${domain} (${browser})`}>

@@ -21,6 +21,15 @@ interface DayGroup {
   totalCount: number;
 }
 
+const BROWSER_LABEL: Record<string, string> = {
+  firefox: "FF",
+  safari:  "SF",
+  chrome:  "CH",
+  edge:    "ED",
+  brave:   "BR",
+  arc:     "AR",
+};
+
 function groupEntries(entries: HistoryEntry[]): DayGroup[] {
   const dayMap = new Map<string, DayGroup>();
 
@@ -54,7 +63,6 @@ function groupEntries(entries: HistoryEntry[]): DayGroup[] {
     day.totalCount++;
   }
 
-  // Sort hours descending within each day
   for (const day of dayMap.values()) {
     day.hours.sort((a, b) => b.hour - a.hour);
   }
@@ -70,7 +78,7 @@ function EntryRow({ entry }: { entry: HistoryEntry }) {
     try {
       await openUrl(entry.url);
     } catch {
-      // fallback: copy to clipboard or ignore
+      // ignore
     }
   }
 
@@ -85,7 +93,7 @@ function EntryRow({ entry }: { entry: HistoryEntry }) {
         <span className="entry-url">{entry.domain}</span>
       </div>
       <span className={`browser-badge ${entry.browser}`}>
-        {entry.browser === "firefox" ? "FF" : entry.browser === "safari" ? "SF" : "CH"}
+        {BROWSER_LABEL[entry.browser] ?? entry.browser.slice(0, 2).toUpperCase()}
       </span>
     </div>
   );
