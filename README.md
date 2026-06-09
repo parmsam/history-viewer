@@ -45,6 +45,50 @@ History Viewer reads a snapshot of your browser databases at the moment you open
 
 **Firefox / Safari:** Generally flush to disk more reliably while open, but the same principle applies — refresh to get the latest data.
 
+## MCP Server (for Claude / LLMs)
+
+History Viewer ships a companion MCP server that exposes your browser history as tools any MCP-compatible LLM can call.
+
+**Tools available:**
+- `get_history` — fetch entries by date range and browser
+- `search_history` — regex search across URLs and page titles
+
+### Install (no Rust required)
+
+Download `history-viewer-mcp` from the [Releases](https://github.com/parmsam/history-viewer/releases) page, then add it to your Claude config:
+
+**Claude Code** (`~/.claude.json`):
+```json
+{
+  "mcpServers": {
+    "history-viewer": {
+      "command": "/path/to/history-viewer-mcp"
+    }
+  }
+}
+```
+
+**Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "history-viewer": {
+      "command": "/path/to/history-viewer-mcp"
+    }
+  }
+}
+```
+
+> The MCP server requires the same **Full Disk Access** permission as the app itself. Grant it to your terminal in **System Settings → Privacy & Security → Full Disk Access**.
+
+### Build from source
+
+```bash
+cd mcp-server
+cargo build --release
+# binary: mcp-server/target/release/history-viewer-mcp
+```
+
 ## Requirements
 
 - macOS 11+

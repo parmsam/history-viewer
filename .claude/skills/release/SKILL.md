@@ -35,18 +35,25 @@ Follow these steps exactly to produce a release build:
      "src-tauri/target/release/bundle/dmg/History Viewer_${VERSION}_aarch64.dmg"
    ```
 
-5. **Confirm the DMG exists** and report its path and file size to the user.
+5. **Build the MCP server binary:**
+   ```bash
+   cd mcp-server && cargo build --release && cd ..
+   ```
+   Confirm the binary exists at `mcp-server/target/release/history-viewer-mcp`.
 
-6. **Push commits to main** so the release tag points to the right code:
+6. **Confirm the DMG and MCP binary exist** and report their paths and sizes to the user.
+
+7. **Push commits to main** so the release tag points to the right code:
    ```bash
    git push origin main
    ```
 
-7. **Create the GitHub release** using `gh release create`:
+8. **Create the GitHub release** using `gh release create`:
    ```bash
    VERSION=$(node -p "require('./package.json').version")
    gh release create "v${VERSION}" \
      "src-tauri/target/release/bundle/dmg/History Viewer_${VERSION}_aarch64.dmg" \
+     "mcp-server/target/release/history-viewer-mcp" \
      --repo parmsam/history-viewer \
      --title "v${VERSION}" \
      --notes "See [CHANGELOG.md](https://github.com/parmsam/history-viewer/blob/main/CHANGELOG.md) for details."
